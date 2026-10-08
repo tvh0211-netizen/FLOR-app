@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="FLOR">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F8F9FA">
+<title>FLOR</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F9FA;--card:#fff;--ink:#1F2A22;--mute:#6B766E;--line:#E1E6E2;--day:#2F7FC1;--dayS:#E1EEF8;--eve:#C4651A;--eveS:#FBEBDD;--cedar:#A9744A;--acc:var(--day);--accS:var(--dayS);--on:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141A16;--card:#1C241E;--ink:#EDF1EE;--mute:#9AA69D;--line:#2B362D;--dayS:#1B2A38;--eveS:#33271B;--day:#6BB0E8;--eve:#F0A35E;--on:#121712}}
+:root[data-theme="dark"]{--bg:#141A16;--card:#1C241E;--ink:#EDF1EE;--mute:#9AA69D;--line:#2B362D;--dayS:#1B2A38;--eveS:#33271B;--day:#6BB0E8;--eve:#F0A35E;--on:#121712}
+body[data-mode="eve"]{--acc:var(--eve);--accS:var(--eveS)}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 Figtree,system-ui,sans-serif;transition:background .8s}
+body[data-mode="eve"]{background:color-mix(in srgb,var(--eveS) 45%,var(--bg))}
+.app{max-width:440px;margin:0 auto;padding:20px 20px 96px;min-height:100vh}
+h1,h2,.big{font-family:Fraunces,Georgia,serif;font-weight:400;margin:0}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+.logo{font:600 20px Fraunces,Georgia,serif;letter-spacing:.14em}
+.pill{font-size:13px;color:var(--mute);border:1px solid var(--line);border-radius:99px;padding:4px 12px}
+.view{display:none}.view.on{display:block}
+.state{color:var(--mute);margin:0 0 4px}
+.big{font-size:40px;line-height:1.1;margin-bottom:6px}
+.sub{color:var(--mute);margin:0 0 28px}
+.dial{position:relative;width:240px;height:240px;margin:0 auto 28px}
+.dial svg{width:100%;height:100%;transform:rotate(-90deg)}
+.dial .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.dial .t{font:400 44px Fraunces,Georgia,serif}
+.dial .l{font-size:13px;color:var(--mute)}
+.go{width:100%;border:0;border-radius:99px;background:var(--acc);color:var(--on);font:600 17px Figtree,sans-serif;padding:18px;cursor:pointer;transition:transform .15s}
+.go:active{transform:scale(.98)}
+.ghost{width:100%;margin-top:10px;background:none;border:1px solid var(--line);color:var(--ink);border-radius:99px;padding:12px;font:500 15px Figtree,sans-serif;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.row{display:flex;gap:10px;margin-top:24px}
+.mini{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.mini b{display:block;font-weight:600}.mini span{font-size:13px;color:var(--mute)}
+.bar{height:6px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--c,var(--day))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
+.card.active{border-color:var(--c)}
+.card h2{font-size:22px}
+.card .meta{font-size:14px;color:var(--mute);margin:2px 0 14px}
+label{display:block;font-size:14px;font-weight:500;margin:14px 0 6px}
+input[type=time],select{width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--c,var(--acc))}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{flex:1;min-width:44px;padding:10px 0;text-align:center;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:500 14px Figtree,sans-serif;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--day);color:var(--on);border-color:var(--day)}
+.seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{flex:1;padding:10px;border:0;background:var(--card);color:var(--ink);font:500 14px Figtree,sans-serif;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--day);color:var(--on)}
+.sw{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:16px}
+.sw span{font-size:14px}.sw small{display:block;color:var(--mute)}
+.sw input{width:22px;height:22px;accent-color:var(--day)}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;background:var(--bg);border-top:1px solid var(--line);padding:6px 12px calc(6px + env(safe-area-inset-bottom,0px))}
+nav div{display:flex;width:100%;max-width:440px}
+nav button{flex:1;border:0;background:none;color:var(--mute);font:500 14px Figtree,sans-serif;padding:12px 0;cursor:pointer;border-radius:12px}
+nav button[aria-current=page]{color:var(--ink);font-weight:600}
+.ov{position:fixed;inset:0;background:color-mix(in srgb,var(--eve) 45%,#120a04);color:#fff;display:none;place-content:center;text-align:center;padding:32px;z-index:5}
+.ov.on{display:grid;animation:f 1.2s ease}
+@keyframes f{from{opacity:0}to{opacity:1}}
+.ov h2{font-size:38px;margin-bottom:12px}.ov p{max-width:300px;margin:0 auto 28px;opacity:.9}
+.ov button{background:#fff;color:#5A2E0A;border:0;border-radius:99px;padding:14px 28px;font:600 16px Figtree,sans-serif;cursor:pointer}
+.ov button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.alert{background:var(--accS);border:1px solid var(--acc);border-radius:16px;padding:14px 16px;margin-top:16px;font-size:14px}.alert b{display:block;font-size:16px}.alert button{margin-top:10px;border:0;border-radius:99px;background:var(--acc);color:var(--on);font:600 14px Figtree,sans-serif;padding:10px 18px;cursor:pointer}
+.week{margin-top:24px}.week p{margin:0;font-size:14px;color:var(--mute)}.week .d{display:flex;justify-content:space-between;margin-top:8px}.dot{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);display:grid;place-content:center;font-size:13px;color:var(--mute)}.dot.on{background:var(--eve);border-color:var(--eve);color:var(--on)}.dot.t{outline:2px solid var(--acc);outline-offset:2px}.glow{width:120px;height:120px;border-radius:50%;margin:0 auto 24px;background:radial-gradient(circle,#FFC27A,#E8893A 60%,transparent 72%)}
+.clk{font:400 24px Fraunces,Georgia,serif;font-variant-numeric:tabular-nums;margin-bottom:4px}
+.pp{display:flex;gap:10px}.pp .ghost{flex:1}
+.dtr{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px}.dtr span{font-size:14px;width:96px}
+textarea{width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);min-height:84px}
+.ob{position:fixed;inset:0;background:var(--bg);display:none;place-content:center;padding:28px;z-index:6}.ob.on{display:grid}.ob>div{max-width:400px}
+.moods{display:flex;gap:8px;margin:10px 0}.moods button{flex:1;margin-top:0;padding:12px 6px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:500 14px Figtree,sans-serif;cursor:pointer}.moods button[aria-pressed=true]{background:var(--eve);color:var(--on);border-color:var(--eve)}
+.ov button.quiet{background:none;color:#fff;border:1px solid #fff;margin-left:8px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body data-mode="day">
+<div class="app">
+  <div class="top"><div class="logo">FLOR</div><div style="text-align:right"><div class="clk" id="clock" aria-label="Current time"></div><div class="pill" id="dev">Simulated diffuser</div></div></div>
+
+  <section class="view on" id="v-home">
+    <p class="state" id="state"></p>
+    <h1 class="big" id="head"></h1>
+    <p class="sub" id="sub"></p>
+    <div class="dial" id="dial" hidden>
+      <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--line)" stroke-width="6"/><circle id="ring" cx="60" cy="60" r="52" fill="none" stroke="var(--acc)" stroke-width="6" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="0"/></svg>
+      <div class="mid"><div class="t" id="cd">--:--</div><div class="l" id="cdl"></div></div>
+    </div>
+    <button class="go" id="go">Start evening wind-down</button>
+    <button class="ghost" id="try">Try it now: 2-minute demo</button>
+    <div class="pp" id="pp"><button class="ghost" data-m="10">Postpone 10 min</button><button class="ghost" data-m="30">Postpone 30 min</button></div>
+    <button class="go" id="cl" hidden>Laptop closed</button>
+    <button class="ghost" id="ext" hidden>Add 10 minutes</button>
+    <button class="ghost" id="back" hidden>Back to focus mode</button>
+    <div class="row">
+      <div class="mini"><b id="m1n"></b><span id="m1l"></span><div class="bar"><i id="m1b"></i></div></div>
+      <div class="mini"><b id="m2n"></b><span id="m2l"></span><div class="bar"><i id="m2b" style="--c:var(--eve)"></i></div></div>
+    </div>
+    <div class="week" id="week"></div>
+    <div class="alert" id="fbcard" hidden></div>
+    <div class="alert" id="alert" hidden></div>
+  </section>
+
+  <section class="view" id="v-sched">
+    <h1 class="big">Shutdown time</h1>
+    <p class="sub">Set when your workday ends. FLOR does the rest.</p>
+    <div class="card">
+      <label for="time" style="margin-top:0">Wind-down starts at</label>
+      <input type="time" id="time">
+      <label>Work days</label>
+      <div class="chips" id="days"></div>
+      <div class="sw"><span>Start automatically<small>Runs the ritual without a tap</small></span><input type="checkbox" id="auto" aria-label="Start automatically"></div>
+    </div>
+    <div class="card"><h2>Different time on a day</h2><p class="meta">Leave a day blank to use the time above.</p><div id="dtimes"></div></div>
+    <div class="card"><h2>Alerts</h2><div class="sw" style="margin:0"><span>Chime and notification<small id="almsg">Plays at shutdown time while this page is open</small></span><input type="checkbox" id="alr" aria-label="Chime and notification"></div></div>
+    <div class="card"><h2>Wind-down length</h2><p class="meta">How long the evening scent runs before it switches itself off.</p>
+      <div class="seg" id="len"><button data-v="15">15 min</button><button data-v="30">30 min</button><button data-v="45">45 min</button><button data-v="60">60 min</button></div></div>
+    <div class="card">
+      <h2>Calendar</h2>
+      <p class="meta">Move the shutdown time to your last meeting of the day.</p>
+      <div class="seg" id="cal"><button data-v="off">Off</button><button data-v="google">Google</button><button data-v="outlook">Outlook</button></div>
+      <p class="meta" id="calnote" style="margin:10px 0 0"></p>
+    </div>
+  </section>
+
+  <section class="view" id="v-scent">
+    <h1 class="big">Scents</h1>
+    <p class="sub">Two chambers: one for focus, one for letting go.</p>
+    <div id="chambers"></div>
+    <div class="card">
+      <div class="sw" style="margin:0"><span>Vary intensity through the day<small>Small shifts keep your nose from tuning the scent out</small></span><input type="checkbox" id="vary" aria-label="Vary intensity"></div>
+    </div>
+    <div class="card"><h2>Evening light</h2><p class="meta">Testers found full brightness too harsh. 50% is the default.</p>
+      <label for="lt" style="margin-top:0">Brightness <span id="ltv"></span></label><input type="range" id="lt" min="20" max="100"></div>
+    <button class="ghost" id="demo">Demo: toggle low cartridge</button>
+    <button class="ghost" id="demo2">Demo: fill last 7 days</button>
+  </section>
+
+  <section class="view" id="v-fb">
+    <h1 class="big">Feedback</h1>
+    <p class="sub">Thanks for testing FLOR. The diffuser is simulated in this prototype.</p>
+    <div class="card"><label for="note" style="margin-top:0">What worked, and what confused you?</label><textarea id="note"></textarea><button class="go" id="savenote" style="margin-top:12px;padding:12px">Save note</button><p class="meta" id="notemsg" style="margin:8px 0 0"></p></div>
+    <div class="card"><h2>Send your results</h2><p class="meta">Copy this summary and paste it to the person who gave you the link.</p><textarea id="sum" readonly></textarea><button class="go" id="copy" style="margin-top:12px;padding:12px">Copy summary</button><p class="meta" id="copymsg" style="margin:8px 0 0"></p></div>
+    <button class="ghost" id="reset">Reset prototype</button>
+  </section>
+</div>
+
+<div class="ob" id="ob" role="dialog" aria-modal="true"><div id="obc"></div></div>
+
+<div class="ov" id="ov" role="dialog" aria-modal="true" aria-labelledby="ovh">
+  <div><div class="glow" id="glow"></div><h2 id="ovh">Close your laptop</h2><p id="ovp"></p><button id="ovb">Laptop closed</button><button class="quiet" id="ovn">Not yet</button></div>
+</div>
+
+<nav><div id="nav">
+  <button data-t="home" aria-current="page">Today</button><button data-t="sched">Schedule</button><button data-t="scent">Scents</button><button data-t="fb">Feedback</button>
+</div></nav>
+
+<script>
+const DAYS=['M','T','W','T','F','S','S'];
+const SCENTS={1:['Citrus & rosemary','Lemon & mint','Grapefruit'],2:['Lavender','Cedarwood','Sandalwood']};
+const def={onboarded:false,dayTimes:{},shift:{d:'',m:0},closed:true,fbDone:true,alerts:false,log:[],fb:[],note:'',hist:[],timerMin:30,light:50,endAt:0,ordered:false,time:'17:30',days:[1,1,1,1,1,0,0],auto:true,cal:'off',vary:true,mode:'day',ch:{1:{scent:0,level:72,int:60},2:{scent:0,level:88,int:50}}};
+let S;
+try{S=Object.assign({},def,JSON.parse(localStorage.getItem('flor')||'{}'))}catch(e){S=def}
+const $=id=>document.getElementById(id);
+function save(){try{localStorage.setItem('flor',JSON.stringify(S))}catch(e){}}
+function timeFor(d){return S.dayTimes[(d.getDay()+6)%7]||S.time}
+function target(){const d=new Date();const[h,m]=timeFor(d).split(':').map(Number);d.setHours(h,m,0,0);if(S.shift.d===dkey(0))d.setMinutes(d.getMinutes()+S.shift.m);return d}
+function mins(t){const[h,m]=t.split(':').map(Number);return h*60+m}
+function dkey(o){const d=new Date();d.setDate(d.getDate()-o);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function pad(n){return String(n).padStart(2,'0')}
+function log(e){S.log.push({t:new Date().toISOString(),e});S.log=S.log.slice(-200);save()}
+function render(){
+  const eve=S.mode==='eve';document.body.dataset.mode=eve?'eve':'day';
+  const c1=S.ch[1],c2=S.ch[2];
+  $('state').textContent=eve?'Evening mode':'Focus mode active';
+  $('head').textContent=eve?(S.endAt?'Time to switch off':'Workday complete'):'Until '+pad(target().getHours())+':'+pad(target().getMinutes());
+  $('sub').textContent=eve?(S.endAt?SCENTS[2][c2.scent]+' is filling the room.':'The evening scent has finished.'):'';
+  $('go').hidden=eve;$('try').hidden=eve;$('pp').hidden=eve;$('cl').hidden=!(eve&&!S.closed);$('ext').hidden=!(eve&&S.endAt);$('back').hidden=!eve;
+  $('m1n').textContent='Focus';$('m1l').textContent=SCENTS[1][c1.scent]+' · '+c1.level+'% left';$('m1b').style.width=c1.level+'%';
+  $('m2n').textContent='Evening';$('m2l').textContent=SCENTS[2][c2.scent]+' · '+c2.level+'% left';$('m2b').style.width=c2.level+'%';
+  const low=[1,2].filter(n=>S.ch[n].level<20),al=$('alert');
+  if(low.length){const n=low[0];al.hidden=false;al.innerHTML='<b>Chamber '+n+' is almost empty</b>'+SCENTS[n][S.ch[n].scent]+' · '+S.ch[n].level+'% left. '+(S.ordered?'Refill ordered (preview only).':'Reorder before it runs out.<br><button id="reo">Reorder cartridge</button>')}else al.hidden=true;
+  const wk=[6,5,4,3,2,1,0].map(o=>{const d=new Date();d.setDate(d.getDate()-o);const on=S.hist.includes(dkey(o));return '<div class="dot'+(on?' on':'')+(o==0?' t':'')+'" aria-label="'+d.toDateString()+(on?': shutdown done':': no shutdown')+'">'+DAYS[(d.getDay()+6)%7]+'</div>'}).join('');
+  $('week').innerHTML='<p>Last 7 days · '+[0,1,2,3,4,5,6].filter(o=>S.hist.includes(dkey(o))).length+' shutdowns</p><div class="d">'+wk+'</div>';
+  $('dial').hidden=!(eve&&S.endAt);fbRender();wake(eve&&!!S.endAt);
+  tick();
+}
+function clock(){const d=new Date();$('clock').textContent=pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds())}
+function tick(){clock();
+  const eve=S.mode==='eve',now=new Date(),diff=target()-now;
+  if(eve){
+    if(S.endAt){const left=S.endAt-now;if(left<=0){S.endAt=0;S.fbDone=false;log('finish');if(S.alerts)ring('Your evening scent has finished.');save();render();return}
+      $('cd').textContent=pad(Math.floor(left/60000))+':'+pad(Math.floor(left%60000/1000));$('cdl').textContent='evening scent running';$('ring').style.strokeDashoffset=326.7*(1-left/(S.totalMs||S.timerMin*60000));return}
+    $('cd').textContent='Done';$('cdl').textContent='Evening scent stopped';$('ring').style.strokeDashoffset=0;return}
+  if(S.days[(now.getDay()+6)%7]&&diff<1000&&diff>-2000&&!window._fired){window._fired=1;if(S.alerts)ring('Time to wind down.');if(S.auto)start()}
+  if(diff<=0){$('sub').textContent='Your shutdown time has passed.';return}
+  const mm=Math.round(diff/60000);$('sub').textContent='In '+(mm>=60?Math.floor(mm/60)+'h '+pad(mm%60)+'m':mm+' min')+'.';
+}
+function start(m){const min=m||S.timerMin;
+  S.mode='eve';S.endAt=Date.now()+min*60000;S.totalMs=min*60000;S.closed=false;S.fbDone=true;S.isTry=!!m;log(m?'try':'start');S.ch[2].level=Math.max(0,S.ch[2].level-1);save();render();
+  $('ovp').textContent='Focus diffusion has stopped and '+SCENTS[2][S.ch[2].scent].toLowerCase()+' is on for '+min+' minutes, with the light at '+S.light+'%. Shut the lid and step away from your desk.';$('glow').style.opacity=S.light/100;
+  $('ov').classList.add('on');$('ovb').focus();
+}
+$('go').onclick=()=>start();
+function confirmClosed(){if(S.closed)return;S.closed=true;if(!S.isTry&&!S.hist.includes(dkey(0)))S.hist.push(dkey(0));S.hist=S.hist.slice(-30);log('confirm');save();render()}
+$('ovb').onclick=()=>{$('ov').classList.remove('on');confirmClosed()};$('ovn').onclick=()=>$('ov').classList.remove('on');$('cl').onclick=confirmClosed;
+$('ext').onclick=()=>{log('extend');S.endAt+=600000;S.totalMs=(S.totalMs||S.timerMin*60000)+600000;save();render()};
+$('back').onclick=()=>{log('cancel');S.mode='day';S.endAt=0;window._fired=0;save();render()};
+// nav
+$('nav').onclick=e=>{const t=e.target.dataset.t;if(!t)return;
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+t));
+  document.querySelectorAll('#nav button').forEach(b=>b.toggleAttribute('aria-current',b.dataset.t===t));
+  document.querySelectorAll('#nav button').forEach(b=>{if(b.dataset.t===t)b.setAttribute('aria-current','page')});if(t==='fb')sumRender();window.scrollTo(0,0)};
+// schedule
+$('time').value=S.time;$('time').onchange=e=>{S.time=e.target.value||S.time;save();render()};
+$('auto').checked=S.auto;$('auto').onchange=e=>{S.auto=e.target.checked;save()};
+$('days').innerHTML=DAYS.map((d,i)=>`<button class="chip" data-i="${i}" aria-pressed="${!!S.days[i]}" aria-label="${['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][i]}">${d}</button>`).join('');
+$('days').onclick=e=>{const i=e.target.dataset.i;if(i==null)return;S.days[i]=S.days[i]?0:1;e.target.setAttribute('aria-pressed',!!S.days[i]);save()};
+function cal(){document.querySelectorAll('#cal button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===S.cal));
+  $('calnote').textContent=S.cal==='off'?'Calendar sync is off.':'Preview only: in the full app, FLOR would read your '+(S.cal==='google'?'Google':'Outlook')+' calendar and shift the time on days with late meetings.'}
+$('cal').onclick=e=>{if(!e.target.dataset.v)return;S.cal=e.target.dataset.v;save();cal()};cal();
+// scents
+$('vary').checked=S.vary;$('vary').onchange=e=>{S.vary=e.target.checked;save()};
+function chambers(){
+  $('chambers').innerHTML=[1,2].map(n=>{const c=S.ch[n],col=n==1?'var(--day)':'var(--eve)';
+  return `<div class="card active" style="--c:${col}"><h2>${n==1?'Chamber 1 · Daytime focus':'Chamber 2 · Evening detachment'}</h2>
+  <p class="meta">${n==1?'Runs while you work':'Starts at shutdown'}</p>
+  <label for="s${n}" style="margin-top:0">Scent</label><select id="s${n}" data-n="${n}">${SCENTS[n].map((s,i)=>`<option value="${i}" ${i==c.scent?'selected':''}>${s}</option>`).join('')}</select>
+  <label for="i${n}">Intensity <span id="iv${n}">${c.int}%</span></label><input type="range" id="i${n}" data-n="${n}" min="10" max="100" value="${c.int}">
+  <label>Cartridge</label><div class="bar" style="--c:${col}"><i style="width:${c.level}%"></i></div><p class="meta" style="margin:6px 0 0">${c.level}% left${c.level<20?' · Order a refill soon':''}</p></div>`}).join('')}
+$('chambers').onchange=e=>{const n=e.target.dataset.n;if(e.target.tagName==='SELECT'){S.ch[n].scent=+e.target.value;save();render()}};
+$('chambers').oninput=e=>{const n=e.target.dataset.n;if(e.target.type==='range'){S.ch[n].int=+e.target.value;$('iv'+n).textContent=e.target.value+'%';save()}};
+$('alert').onclick=e=>{if(e.target.id==='reo'){S.ordered=true;save();render()}};
+$('demo').onclick=()=>{S.ch[2].level=S.ch[2].level<20?88:12;S.ordered=false;save();chambers();render()};
+function len(){document.querySelectorAll('#len button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===S.timerMin))}
+$('len').onclick=e=>{if(!e.target.dataset.v)return;S.timerMin=+e.target.dataset.v;save();len()};len();
+$('lt').value=S.light;$('ltv').textContent=S.light+'%';$('lt').oninput=e=>{S.light=+e.target.value;$('ltv').textContent=S.light+'%';save()};
+$('demo2').onclick=()=>{S.hist=[1,2,3,5].map(dkey);save();render()};
+
+// postpone + demo run
+$('pp').onclick=e=>{const m=+e.target.dataset.m;if(!m)return;const t=target(),base=Math.max(Date.now(),t.getTime()),delta=Math.round((base+m*60000-t.getTime())/60000),same=S.shift.d===dkey(0);S.shift={d:dkey(0),m:(same?S.shift.m:0)+delta};window._fired=0;log('postpone '+m);save();render()};
+$('try').onclick=()=>start(2);
+// per-day times
+$('dtimes').innerHTML=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map((n,i)=>`<div class="dtr"><span>${n}</span><input type="time" data-i="${i}" value="${S.dayTimes[i]||''}" aria-label="${n} shutdown time"></div>`).join('');
+$('dtimes').onchange=e=>{const i=e.target.dataset.i;if(i==null)return;if(e.target.value)S.dayTimes[i]=e.target.value;else delete S.dayTimes[i];save();render()};
+// alerts
+let AC;document.addEventListener('click',()=>{try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();AC.resume()}catch(e){}});
+function ring(msg){try{if(AC)[523,659,784].forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+i*.3;o.frequency.value=f;o.connect(g);g.connect(AC.destination);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.2,t+.05);g.gain.exponentialRampToValueAtTime(.0001,t+.7);o.start(t);o.stop(t+.8)})}catch(e){}
+  try{if('Notification' in window&&Notification.permission==='granted')new Notification('FLOR',{body:msg})}catch(e){}}
+$('alr').checked=S.alerts;$('alr').onchange=e=>{S.alerts=e.target.checked;save();if(S.alerts){ring('Alerts are on.');try{if('Notification' in window&&Notification.permission==='default')Notification.requestPermission().then(p=>{$('almsg').textContent=p==='granted'?'Chime and notification at shutdown time':'Notifications are blocked, but you will still hear the chime'})}catch(e){}}};
+// feedback prompt after a ritual
+function fbRender(){const c=$('fbcard');if(S.mode!=='eve'||S.endAt||S.fbDone){c.hidden=true;delete c.dataset.on;return}
+  c.hidden=false;if(c.dataset.on)return;c.dataset.on=1;c.innerHTML='<b>How did that feel?</b><div class="moods" id="moods"><button data-m="Calm">Calm</button><button data-m="Neutral">Neutral</button><button data-m="Annoying">Annoying</button></div><label for="fbt" style="margin-top:0">Anything to add? (optional)</label><textarea id="fbt"></textarea><button id="fbs">Save</button>'}
+$('fbcard').onclick=e=>{if(e.target.dataset.m){S.mood=e.target.dataset.m;document.querySelectorAll('#moods button').forEach(b=>b.setAttribute('aria-pressed',b===e.target))}
+  if(e.target.id==='fbs'){S.fb.push({t:new Date().toISOString(),mood:S.mood||'no rating',note:($('fbt').value||'').trim(),test:!!S.isTry});S.mood='';S.fbDone=true;save();render()}};
+// feedback tab
+$('note').value=S.note;$('savenote').onclick=()=>{S.note=$('note').value.trim();save();$('notemsg').textContent='Saved.';sumRender()};
+function sumRender(){const c=e=>S.log.filter(x=>x.e.split(' ')[0]===e).length;
+  $('sum').value=['FLOR prototype session summary','Shutdown time: '+S.time+(Object.keys(S.dayTimes).length?' (custom times on some days)':'')+', wind-down '+S.timerMin+' min, auto-start '+(S.auto?'on':'off')+', alerts '+(S.alerts?'on':'off'),
+  'Ritual starts: '+c('start')+' | Demo runs: '+c('try')+' | Laptop closed: '+c('confirm')+' | Postponed: '+c('postpone')+' | Extended: '+c('extend')+' | Cancelled: '+c('cancel')+' | Finished: '+c('finish'),
+  'Shutdowns in last 7 days: '+[0,1,2,3,4,5,6].filter(o=>S.hist.includes(dkey(o))).length,
+  'Ratings: '+(S.fb.length?S.fb.map(f=>f.mood+(f.note?' ("'+f.note+'")':'')).join('; '):'none yet'),'Notes: '+(S.note||'none')].join('\n')}
+$('copy').onclick=()=>{sumRender();const ok=()=>$('copymsg').textContent='Copied. Paste it into a message to the person who sent you the link.';const fb=()=>{$('sum').select();try{document.execCommand('copy');ok()}catch(e){$('copymsg').textContent='Select the text above and copy it manually.'}};try{navigator.clipboard.writeText($('sum').value).then(ok,fb)}catch(e){fb()}};
+$('reset').onclick=()=>{if($('reset').dataset.s!=='1'){$('reset').dataset.s='1';$('reset').textContent='Tap again to erase all data';return}try{localStorage.removeItem('flor')}catch(e){}location.reload()};
+// onboarding
+const OB=[{h:'Switch off, on cue',p:'FLOR marks the end of your workday with a change of scent and light. In this prototype the diffuser is simulated, so you will see the ritual on screen but nothing is released.',b:'Next'},
+{h:'When does your day end?',p:'You can set different times for each day later.',x:'<input type="time" id="obt" aria-label="Shutdown time">',b:'Next'},
+{h:'How long should it run?',p:'The evening scent switches itself off after this long.',x:'<div class="seg" id="obl"><button data-v="15">15 min</button><button data-v="30">30 min</button><button data-v="45">45 min</button><button data-v="60">60 min</button></div>',b:'Start using FLOR'}];
+let obi=0,obLen=30;
+function obSeg(){document.querySelectorAll('#obl button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===obLen))}
+function obShow(){const o=OB[obi];$('obc').innerHTML='<h2 class="big" style="font-size:32px">'+o.h+'</h2><p class="sub" style="margin-bottom:18px">'+o.p+'</p>'+(o.x||'')+'<button class="go" id="obn" style="margin-top:22px">'+o.b+'</button>';
+  if(obi===1)$('obt').value=S.time;
+  if(obi===2){obLen=S.timerMin;obSeg();$('obl').onclick=e=>{if(e.target.dataset.v){obLen=+e.target.dataset.v;obSeg()}}}
+  $('obn').onclick=()=>{if(obi===1&&$('obt').value)S.time=$('obt').value;if(obi<2){obi++;obShow();return}S.timerMin=obLen;S.onboarded=true;save();$('ob').classList.remove('on');$('time').value=S.time;len();render()};$('obn').focus()}
+// keep the screen on during the countdown
+let WL=null;async function wake(on){try{if(on&&!WL&&navigator.wakeLock){WL=await navigator.wakeLock.request('screen');WL.addEventListener('release',()=>{WL=null})}else if(!on&&WL){await WL.release();WL=null}}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')wake(S.mode==='eve'&&!!S.endAt)});
+// home-screen icon
+(function(){try{const c=document.createElement('canvas');c.width=c.height=180;const x=c.getContext('2d');x.fillStyle='#2F7FC1';x.fillRect(0,0,180,180);x.fillStyle='#F8F9FA';x.font='600 96px Georgia,serif';x.textAlign='center';x.textBaseline='middle';x.fillText('F',88,98);x.fillStyle='#E8893A';x.beginPath();x.arc(140,42,15,0,7);x.fill();const u=c.toDataURL('image/png');['apple-touch-icon','icon'].forEach(rel=>{const l=document.createElement('link');l.rel=rel;l.href=u;document.head.appendChild(l)})}catch(e){}})();
+chambers();render();setInterval(tick,1000);setInterval(render,20000);
+if(!S.onboarded){$('ob').classList.add('on');obShow()}
+</script>
+</body>
+</html>
